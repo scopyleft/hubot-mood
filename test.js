@@ -22,7 +22,7 @@ describe('#store()', function() {
     it("should store a user's mood", function(done) {
         engine.store({ user: "john", mood: "sunny" }, function(err) {
             assert(!err);
-            assert(this instanceof MoodEngine)
+            assert(this instanceof MoodEngine);
             engine.query({ user: "john" }, function(err, moods) {
                 assert(!err);
                 assert.equal(moods.length, 1);
@@ -34,21 +34,21 @@ describe('#store()', function() {
         });
     });
 
-    it("should't store a user's mood twice", function(done) {
+    it("shouldn't store a user's mood twice", function(done) {
         engine.store({ user: "john", mood: "sunny" }, function(err) {
             assert(err);
             done();
         });
     });
 
-    it("should't store an invalid mood", function(done) {
+    it("shouldn't store an invalid mood", function(done) {
         engine.store({ user: "bill", mood: "superman" }, function(err) {
             assert(err);
             done();
         });
     });
 
-    it("should't store incomplete data", function(done) {
+    it("shouldn't store incomplete data", function(done) {
         engine.store({ user: "bill" }, function(err) {
             assert(err);
             engine.store({ mood: "sunny" }, function(err) {
