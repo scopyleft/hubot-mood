@@ -26,6 +26,13 @@ var MoodEngine = require('../lib')
   , Redis      = require('redis')
   , format     = util.format;
 
+function nickname(msg, match) {
+    if (!match || match.toLowerCase().trim() === "me") {
+        return msg.message.user && msg.message.user.name || "unknown";
+    }
+    return match;
+}
+
 module.exports = function(robot) {
     var info   = Url.parse(process.env.HUBOT_MOOD_REDIS_URL || 'redis://localhost:6379')
       , client = Redis.createClient(info.port, info.hostname)
@@ -43,13 +50,13 @@ module.exports = function(robot) {
         robot.logger.debug("Successfully connected to Redis from mood script");
     });
 
-    engine.on('info', function(msg) {
+    engine.on("info", function(msg) {
         robot.logger.info(msg);
     });
 
     robot.respond(/mood set (\w+)$/i, function(msg) {
-        var user = msg.message.user && msg.message.user.name || "anon"
-         ,  mood = msg.match[1].toLowerCase();
+        var user = nickname(msg)
+          , mood = msg.match[1].toLowerCase();
         engine.store({ user: user, mood: mood }, function(err, stored) {
             if (err) return msg.send(err);
             msg.send(format('Recorded entry: %s', stored));
@@ -57,10 +64,12 @@ module.exports = function(robot) {
     });
 
     robot.respond(/mood (today|yesterday)$/i, function(msg) {
-        engine.query({ date: dateUtil.today() }, function(err, moods) {
+        var day = msg.match[1].toLowerCase()
+          , date = day === "today" ? dateUtil.today() : dateUtil.yesterday();
+        engine.query({ date: date }, function(err, moods) {
             if (err) return msg.send(err);
             if (!moods || !moods.length) {
-                return msg.send(format('No mood entry for %s.', msg.match[1]));
+                return msg.send(format('No mood entry for %s %s.', msg.match[1], day));
             }
             moods.forEach(function(mood) {
                 msg.send('- ' + mood.toString());
@@ -68,37 +77,22 @@ module.exports = function(robot) {
         });
     });
 
-    robot.respond(/mood month (of|for) (.*)$/i, function(msg) {
-        var user = msg.match[2];
-        if (user.toLowerCase().trim() === "me") {
-            user = msg.message.user && msg.message.user.name;
-        }
-        engine.graph({ user: user, since: 30 }, function(err, graph) {
-            if (err) return msg.send(err);
-            msg.send(graph);
-        });
-    });
-
-    robot.respond(/mood week (of|for) (.*)$/i, function(msg) {
-        var user = msg.match[2];
-        if (user.toLowerCase().trim() === "me") {
-            user = msg.message.user && msg.message.user.name;
-        }
-        engine.graph({ user: user, since: 7 }, function(err, graph) {
+    robot.respond(/mood (month|week) (of|for) (.*)$/i, function(msg) {
+        var user = nickname(msg, msg.match[2])
+          , since = msg.match[1].toLowerCase() === "month" ? 30 : 7;
+        engine.graph({ user: user, since: since }, function(err, graph) {
             if (err) return msg.send(err);
             msg.send(graph);
         });
     });
 
     robot.respond(/mood (of|for) (.*)$/i, function(msg) {
-        var user = msg.match[2];
-        if (user.toLowerCase().trim() === "me") {
-            user = msg.message.user && msg.message.user.name;
-        }
-        engine.query({date: dateUtil.today(), user: user}, function(err, moods) {
+        var user = nickname(msg, msg.match[2])
+          , date = dateUtil.today();
+        engine.query({date: date, user: user}, function(err, moods) {
             if (err) return msg.send(err);
             if (!moods || !moods[0]) {
-                return msg.send(format('%s has not set a mood, yet', user));
+                return msg.send(format('%s has not set a mood today, yet', user));
             }
             msg.send(moods[0].toString());
         });
