@@ -65,6 +65,8 @@ describe('MoodEngine.Mood', function() {
     it('should handle toString()', function() {
         assert.strictEqual(createMood({ user: "x", mood: "sunny", date: "2013-01-01" })().toString(),
                      "On 2013-01-01, x was on a sunny mood ☀");
+        assert.strictEqual(createMood({ user: "x", mood: "rainy", date: dateUtil.yesterday() })().toString(),
+                     "Yesterday, x was on a rainy mood ☂");
         assert.strictEqual(createMood({ user: "x", mood: "cloudy" })().toString(),
                      "Today, x is on a cloudy mood ☁");
     });
