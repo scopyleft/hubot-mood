@@ -42,15 +42,35 @@ Demo (purely fictional, if you asked):
 <scopybot> Recorded entry: NiKo` is in a sunny mood today
 <NiKo`> scopybot: mood today
 <scopybot> Today's moods:
-<scopybot> - NiKo` is in a sunny mood
-<scopybot> - pointbar is in a sunny mood
-<scopybot> - vinyll is in a sunny mood
-<scopybot> - david`bgk is in a sunny mood
+<scopybot> - Today, NiKo` is on a sunny mood ☀
+<scopybot> - Today, pointbar is on a sunny mood ☀
+<scopybot> - Today, vinyll is on a sunny mood ☀
+<scopybot> - Today, david`bgk is on a sunny mood ☀
+<NiKo`> scopybot: mood yesterday
+<scopybot> Yesterday's moods:
+<scopybot> - Yesterday, NiKo` was on a cloudy mood ☁
+<scopybot> - Yesterday, pointbar was on a sunny mood ☁
+<scopybot> - Yesterday, vinyll was on a sunny mood ☀
+<scopybot> - Yesterday, david`bgk was on a sunny mood ☀
 <NiKo`> scopybot: mood week of NiKo`
 ▃▅▇▅▃▅▇
 <NiKo`> scopybot: mood month of NiKo`
 ▃▅▇▅▃▅▇▃▅▇▅▃▅▇▃▅▇▅▃▅▇▃▅▇▇▅▇▅▇
 ```
+
+> **Note:** your client must support unicode and be configured accordingly in order to see the fancy pictograms.
+
+To play around with the commands, just run the `hubot` command at the root of the repository:
+
+```
+$ hubot
+Hubot> hubot mood set plop
+Hubot> Error: Invalid mood plop; valid values are sunny, cloudy, rainy, stormy
+Hubot> hubot mood set sunny
+Recorded entry: Today, Shell is on a sunny mood ☀
+```
+
+> **Note:** yes, *Shell* is your username by default when testing locally. I have no idea how to prevent this.
 
 ## Tests
 

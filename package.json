@@ -1,6 +1,6 @@
 {
   "name":        "hubot-mood",
-  "version":     "0.0.1",
+  "version":     "0.2.0",
   "author":      "n1k0",
   "keywords":    ["hubot", "bot", "mood", "team", "irc"],
   "description": "A hubot bot to manage your team's mood",

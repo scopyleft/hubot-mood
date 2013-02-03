@@ -50,30 +50,20 @@ module.exports = function(robot) {
     robot.respond(/mood set (\w+)$/i, function(msg) {
         var user = msg.message.user && msg.message.user.name || "anon"
          ,  mood = msg.match[1].toLowerCase();
-        engine.store({ user: user, mood: mood }, function(err, reply) {
+        engine.store({ user: user, mood: mood }, function(err, stored) {
             if (err) return msg.send(err);
-            msg.send(format('Recorded entry: %s is in a %s mood today', user, mood));
+            msg.send(format('Recorded entry: %s', stored));
         });
     });
 
-    robot.respond(/mood today$/i, function(msg) {
-        msg.send(format("Today's moods:"));
+    robot.respond(/mood (today|yesterday)$/i, function(msg) {
         engine.query({ date: dateUtil.today() }, function(err, moods) {
             if (err) return msg.send(err);
-            if (!moods || !moods.length) return msg.send('No mood entry for today.');
+            if (!moods || !moods.length) {
+                return msg.send(format('No mood entry for %s.', msg.match[1]));
+            }
             moods.forEach(function(mood) {
-                msg.send(format('- %s is in a %s mood', mood.user, mood.mood));
-            });
-        });
-    });
-
-    robot.respond(/mood yesterday$/i, function(msg) {
-        msg.send(format("Yesterday's moods:"));
-        engine.query({ date: dateUtil.yesterday() }, function(err, moods) {
-            if (err) return msg.send(err);
-            if (!moods || !moods.length) return msg.send('No mood entry for yesterday.');
-            moods.forEach(function(mood) {
-                msg.send(format('- %s was in a %s mood', mood.user, mood.mood));
+                msg.send('- ' + mood.toString());
             });
         });
     });
@@ -110,7 +100,7 @@ module.exports = function(robot) {
             if (!moods || !moods[0]) {
                 return msg.send(format('%s has not set a mood, yet', user));
             }
-            msg.send(format('%s: %s is in a %s mood', moods[0].date, moods[0].user, moods[0].mood));
+            msg.send(moods[0].toString());
         });
     });
 };
