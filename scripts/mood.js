@@ -1,5 +1,5 @@
 // Description:
-//   Records moods over time.
+//   Records a team's mood over time and provides some metrics about it.
 //
 // Dependencies:
 //   redis
@@ -8,12 +8,12 @@
 //   HUBOT_MOOD_REDIS_URL: url to redis storage backend
 //
 // Commands:
-//   mood set "<sunny|cloudy|rainy|stormy>"
-//   mood of <(nickname)|me>
-//   mood today
-//   mood yesterday
-//   mood week of <(nickname)|me>
-//   mood month of <(nickname)|me>
+//   hubot mood set "<sunny|cloudy|rainy|stormy>" - set your current mood for today
+//   hubot mood of <(nickname)|me> - show your current mood if it's been set already
+//   hubot mood today - show team's mood for today
+//   hubot mood yesterday - show team's mood for yesterday
+//   hubot mood week of <(nickname)|me> - show someone's mood bargraph for the last 7 days
+//   hubot mood month of <(nickname)|me> - show someone's mood bargraph for the last 30 days
 //
 // Author:
 //   n1k0
