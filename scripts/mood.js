@@ -78,7 +78,7 @@ module.exports = function(robot) {
     });
 
     robot.respond(/mood (month|week) (of|for) (.*)$/i, function(msg) {
-        var user = nickname(msg, msg.match[2])
+        var user = nickname(msg, msg.match[3])
           , since = msg.match[1].toLowerCase() === "month" ? 30 : 7;
         engine.graph({ user: user, since: since }, function(err, graph) {
             if (err) return msg.send(err);
