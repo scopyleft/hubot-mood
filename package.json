@@ -1,32 +1,35 @@
 {
-  "name":        "hubot-mood",
-  "version":     "0.2.2",
-  "author":      "n1k0",
-  "keywords":    ["hubot", "bot", "mood", "team", "irc"],
+  "name": "hubot-mood",
+  "version": "0.3.0",
+  "author": "n1k0",
+  "keywords": [
+    "hubot",
+    "bot",
+    "mood",
+    "team",
+    "irc"
+  ],
   "description": "A hubot bot to manage your team's mood",
-  "licenses":     [{
-    "type":       "MIT",
-    "url":        "http://github.com/scopyleft/hubot-mood/raw/master/LICENSE"
-  }],
-
-  "repository" : {
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/scopyleft/hubot-mood/raw/master/LICENSE"
+    }
+  ],
+  "repository": {
     "type": "git",
-    "url":  "http://github.com/scopyleft/hubot-mood/"
+    "url": "http://github.com/scopyleft/hubot-mood/"
   },
-
   "dependencies": {
     "hubot": ">= 2.4.5",
     "redis": ">= 0.7.2"
   },
-
   "devDependencies": {
     "async": "0.1.22",
     "mocha": "1.8.1"
   },
-
   "engines": {
     "node": "0.8.x",
     "npm": ">= 1.1.x"
   }
 }
-
