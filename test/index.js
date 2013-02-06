@@ -12,16 +12,6 @@ var MoodEngine = require('../lib')
         redisKey: 'mood:test'
     });
 
-function load(engine, fixtures, onComplete) {
-    async.series(fixtures.map(function(fixture) {
-        return function(cb) {
-            engine.store(fixture, function(err, result) {
-                cb(err, result);
-            });
-        };
-    }), onComplete);
-}
-
 describe('MoodEngine.Mood', function() {
     function createMood(data) {
         return function() {
@@ -64,11 +54,11 @@ describe('MoodEngine.Mood', function() {
 
     it('should handle toString()', function() {
         assert.strictEqual(createMood({ user: "x", mood: "sunny", date: "2013-01-01" })().toString(),
-                     "On 2013-01-01, x was on a sunny mood ☀");
+                     "On 2013-01-01, x was in a sunny mood ☀");
         assert.strictEqual(createMood({ user: "x", mood: "rainy", date: dateUtil.yesterday() })().toString(),
-                     "Yesterday, x was on a rainy mood ☂");
+                     "Yesterday, x was in a rainy mood ☂");
         assert.strictEqual(createMood({ user: "x", mood: "cloudy" })().toString(),
-                     "Today, x is on a cloudy mood ☁");
+                     "Today, x is in a cloudy mood ☁");
     });
 
     it('should parse serialized data', function() {
@@ -126,12 +116,13 @@ describe('MoodEngine', function() {
     describe('#query()', function() {
         it("should retrieve user moods", function(done) {
             engine.clear();
-            load(engine, [
+            var moods = [
                 { user: "john", mood: "cloudy" },
                 { user: "john", mood: "cloudy", date: dateUtil.yesterday() },
                 { user: "bill", mood: "sunny" },
                 { user: "jane", mood: "rainy" }
-            ], function(err, results) {
+            ];
+            async.map(moods, engine.store.bind(engine), function(err, results) {
                 results.forEach(function(mood) {
                     assert(mood instanceof MoodEngine.Mood);
                 });
@@ -187,14 +178,15 @@ describe('MoodEngine', function() {
     describe('#graph()', function() {
         it("should generate a graph for a user mood over time", function(done) {
             engine.clear();
-            load(engine, [
+            var moods = [
                 { user: "john", mood: "sunny", date: dateUtil.today()},
                 { user: "john", mood: "cloudy", date: dateUtil.daysBefore(1)},
                 { user: "john", mood: "rainy", date: dateUtil.daysBefore(2)},
                 { user: "john", mood: "stormy", date: dateUtil.daysBefore(3)},
                 { user: "bill", mood: "stormy", date: dateUtil.today()},
                 { user: "bill", mood: "stormy", date: dateUtil.daysBefore(1)},
-            ], function(err, results) {
+            ];
+            async.map(moods, engine.store.bind(engine), function(err, results) {
                 engine.graph({ user: "john", since: 3 }, function(err, graph) {
                     assert.ifError(err);
                     assert.strictEqual(graph, "▃▅▇");
