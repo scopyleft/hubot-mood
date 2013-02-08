@@ -8,7 +8,7 @@
 //   HUBOT_MOOD_REDIS_URL: url to redis storage backend
 //
 // Commands:
-//   hubot mood set "<sunny|cloudy|rainy|stormy>" - set your current mood for today
+//   hubot mood set <sunny|cloudy|rainy|stormy> (info) - set your current mood for today
 //   hubot mood of <(nickname)|me> - show your current mood if it's been set already
 //   hubot mood today - show team's mood for today
 //   hubot mood yesterday - show team's mood for yesterday
@@ -54,10 +54,11 @@ module.exports = function(robot) {
         robot.logger.info(msg);
     });
 
-    robot.respond(/mood set (\w+)$/i, function(msg) {
+    robot.respond(/mood set (\w+)\s?(.*)$/i, function(msg) {
         var user = nickname(msg)
-          , mood = msg.match[1].toLowerCase();
-        engine.store({ user: user, mood: mood }, function(err, stored) {
+          , mood = msg.match[1].toLowerCase()
+          , info = msg.match[2];
+        engine.store({ user: user, mood: mood, info: info }, function(err, stored) {
             if (err) return msg.send(err);
             msg.send(format('Recorded entry: %s', stored));
         });

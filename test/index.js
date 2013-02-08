@@ -27,15 +27,19 @@ describe('MoodEngine.Mood', function() {
         assert.throws(createMood({ mood: "sunny" }), Error);
         assert.throws(createMood({ user: "x", mood: "wrong" }), /valid/);
         assert.doesNotThrow(createMood({ user: "x", mood: "sunny" }));
-        var mood = createMood({ user: "x", mood: "sunny" })();
+        assert.doesNotThrow(createMood({ user: "x", mood: "sunny", info: "plop" }));
+        var mood = createMood({ user: "x", mood: "sunny", info: "plop" })();
         assert.strictEqual(mood.date, dateUtil.today());
         assert.strictEqual(mood.user, "x");
         assert.strictEqual(mood.mood, "sunny");
+        assert.strictEqual(mood.info, "plop");
     });
 
     it('should serialize data', function() {
-        var mood = createMood({ user: "x", mood: "sunny", date: "2013-01-01" })();
-        assert.strictEqual(mood.serialize(), "2013-01-01:x:sunny");
+        var mood1 = createMood({ user: "x", mood: "sunny", date: "2013-01-01" })();
+        assert.strictEqual(mood1.serialize(), "2013-01-01:x:sunny");
+        var mood2 = createMood({ user: "x", mood: "sunny", date: "2013-01-01", info: "plop" })();
+        assert.strictEqual(mood2.serialize(), "2013-01-01:x:sunny:plop");
     });
 
     it('should get correct bar item', function() {
@@ -59,6 +63,8 @@ describe('MoodEngine.Mood', function() {
                      "Yesterday, x was in a rainy mood ☂");
         assert.strictEqual(createMood({ user: "x", mood: "cloudy" })().toString(),
                      "Today, x is in a cloudy mood ☁");
+        assert.strictEqual(createMood({ user: "x", mood: "sunny", date: "2013-01-01", info: "plop" })().toString(),
+                     "On 2013-01-01, x was in a sunny mood ☀ (plop)");
     });
 
     it('should parse serialized data', function() {
@@ -88,8 +94,27 @@ describe('MoodEngine', function() {
             });
         });
 
+        it("should store a user's mood with info", function(done) {
+            engine.store({ user: "mark", mood: "sunny", info: "plop" }, function(err) {
+                assert.ifError(err);
+                engine.query({ user: "mark" }, function(err, moods) {
+                    assert.ifError(err);
+                    assert.strictEqual(moods[0].user, "mark");
+                    assert.strictEqual(moods[0].info, "plop");
+                    done();
+                });
+            });
+        });
+
         it("shouldn't store a user's mood twice", function(done) {
             engine.store({ user: "john", mood: "sunny" }, function(err) {
+                assert(err);
+                done();
+            });
+        });
+
+        it("shouldn't store a user's mood with info twice", function(done) {
+            engine.store({ user: "mark", mood: "sunny", info: "plop" }, function(err) {
                 assert(err);
                 done();
             });
@@ -120,7 +145,7 @@ describe('MoodEngine', function() {
                 { user: "john", mood: "cloudy" },
                 { user: "john", mood: "cloudy", date: dateUtil.yesterday() },
                 { user: "bill", mood: "sunny" },
-                { user: "jane", mood: "rainy" }
+                { user: "jane", mood: "rainy", info: "plop" }
             ];
             async.map(moods, engine.store.bind(engine), function(err, results) {
                 results.forEach(function(mood) {
@@ -139,7 +164,8 @@ describe('MoodEngine', function() {
                     }));
                     assert(moods.some(function(mood) {
                         return mood.user === "jane" && mood.mood === "rainy" &&
-                               mood.date === dateUtil.today();
+                               mood.date === dateUtil.today() &&
+                               mood.info === "plop";
                     }));
                     done();
                 });
@@ -179,7 +205,7 @@ describe('MoodEngine', function() {
         it("should generate a graph for a user mood over time", function(done) {
             engine.clear();
             var moods = [
-                { user: "john", mood: "sunny", date: dateUtil.today()},
+                { user: "john", mood: "sunny", date: dateUtil.today(), info: "plop"},
                 { user: "john", mood: "cloudy", date: dateUtil.daysBefore(1)},
                 { user: "john", mood: "rainy", date: dateUtil.daysBefore(2)},
                 { user: "john", mood: "stormy", date: dateUtil.daysBefore(3)},
