@@ -136,6 +136,33 @@ describe('MoodEngine', function() {
                 });
             });
         });
+
+        it("should filter moods", function(done) {
+            engine.clear();
+            var moods = [
+                { user: "john", mood: "sunny" },
+                { user: "john", mood: "cloudy", date: dateUtil.yesterday() },
+                { user: "john", mood: "rainy", date: dateUtil.daysBefore(2) },
+                { user: "bill", mood: "rainy" },
+                { user: "bill", mood: "cloudy", date: dateUtil.yesterday() },
+                { user: "bill", mood: "sunny", date: dateUtil.daysBefore(2) },
+                { user: "jane", mood: "sunny" },
+                { user: "jane", mood: "sunny", date: dateUtil.yesterday() },
+                { user: "jane", mood: "sunny", date: dateUtil.daysBefore(2) }
+            ];
+            async.map(moods, engine.store.bind(engine), function(err, moods) {
+                assert.ifError(err);
+                assert.equal(moods.length, 9);
+                assert.equal(engine.filter(moods, { user: "john" }).length, 3);
+                assert.equal(engine.filter(moods, { user: "bill" }).length, 3);
+                assert.equal(engine.filter(moods, { user: "jane" }).length, 3);
+                assert.equal(engine.filter(moods, { since: 1 }).length, 3);
+                assert.equal(engine.filter(moods, { user: "john", since: 1 }).length, 1);
+                assert.equal(engine.filter(moods, { mood: "sunny" }).length, 5);
+                assert.equal(engine.filter(moods, { mood: ["rainy", "cloudy"] }).length, 4);
+                done();
+            });
+        });
     });
 
     describe('#query()', function() {
@@ -206,11 +233,11 @@ describe('MoodEngine', function() {
             engine.clear();
             var moods = [
                 { user: "john", mood: "sunny", date: dateUtil.today(), info: "plop"},
-                { user: "john", mood: "cloudy", date: dateUtil.daysBefore(1)},
+                { user: "john", mood: "cloudy", date: dateUtil.yesterday()},
                 { user: "john", mood: "rainy", date: dateUtil.daysBefore(2)},
                 { user: "john", mood: "stormy", date: dateUtil.daysBefore(3)},
                 { user: "bill", mood: "stormy", date: dateUtil.today()},
-                { user: "bill", mood: "stormy", date: dateUtil.daysBefore(1)},
+                { user: "bill", mood: "stormy", date: dateUtil.yesterday()},
             ];
             async.map(moods, engine.store.bind(engine), function(err, results) {
                 engine.graph({ user: "john", since: 3 }, function(err, graph) {
