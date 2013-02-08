@@ -27,7 +27,7 @@ By default, it will try to use `redis://localhost:6379`.
 The bot will respond to several commands:
 
 ```
-mood set "<sunny|cloudy|rainy|stormy>"
+mood set "<sunny|cloudy|rainy|stormy>" (optional info)
 mood of|for <(nickname)|me>
 mood today
 mood yesterday
@@ -38,20 +38,20 @@ mood month of|for <(nickname)|me>
 Demo (purely fictional, if you asked):
 
 ```
-<NiKo`> scopybot: mood set sunny
-<scopybot> Recorded entry: NiKo` is in a sunny mood today
+<NiKo`> scopybot: mood set sunny Let the Sunshine In
+<scopybot> Recorded entry: Today, NiKo` is in a sunny mood ☀ (Let the Sunshine In)
 <NiKo`> scopybot: mood today
 <scopybot> Today's moods:
-<scopybot> - Today, NiKo` is on a sunny mood ☀
-<scopybot> - Today, pointbar is on a sunny mood ☀
-<scopybot> - Today, vinyll is on a sunny mood ☀
-<scopybot> - Today, david`bgk is on a sunny mood ☀
+<scopybot> - Today, NiKo` is in a sunny mood ☀ (Let the Sunshine In)
+<scopybot> - Today, pointbar is in a sunny mood ☀
+<scopybot> - Today, vinyll is in a sunny mood ☀
+<scopybot> - Today, david`bgk is in a sunny mood ☀
 <NiKo`> scopybot: mood yesterday
 <scopybot> Yesterday's moods:
-<scopybot> - Yesterday, NiKo` was on a cloudy mood ☁
-<scopybot> - Yesterday, pointbar was on a sunny mood ☁
-<scopybot> - Yesterday, vinyll was on a sunny mood ☀
-<scopybot> - Yesterday, david`bgk was on a sunny mood ☀
+<scopybot> - Yesterday, NiKo` was in a cloudy mood ☁
+<scopybot> - Yesterday, pointbar was in a sunny mood ☁
+<scopybot> - Yesterday, vinyll was in a sunny mood ☀
+<scopybot> - Yesterday, david`bgk was in a sunny mood ☀
 <NiKo`> scopybot: mood week of NiKo`
 ▃▅▇▅▃▅▇
 <NiKo`> scopybot: mood month of NiKo`
@@ -64,10 +64,10 @@ To play around with the commands, just run the `hubot` command at the root of th
 
 ```
 $ hubot
-Hubot> hubot mood set plop
-Hubot> Error: Invalid mood plop; valid values are sunny, cloudy, rainy, stormy
-Hubot> hubot mood set sunny
-Recorded entry: Today, Shell is on a sunny mood ☀
+Hubot> hubot mood set unhappy
+Hubot> Error: Invalid mood unhappy; valid values are sunny, cloudy, rainy, stormy
+Hubot> hubot mood set sunny Let the Sunshine In
+Recorded entry: Today, Shell is in a sunny mood ☀ (Let the Sunshine In)
 ```
 
 > **Note:** yes, *Shell* is your username by default when testing locally. I have no idea how to prevent this.
