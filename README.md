@@ -74,7 +74,7 @@ Recorded entry: Today, Shell is in a sunny mood ☀ (Let the Sunshine In)
 
 ## Tests
 
-Install [mocha](http://visionmedia.github.com/mocha/) and [async](https://github.com/caolan/async), then run the suite from the root of the repository by running the `mocha` command.
+Install [mocha](http://mochajs.org/) and [async](https://github.com/caolan/async), then run the suite from the root of the repository by running the `mocha` command.
 
 **Note:** Testing requires a live redis server instance running on `redis://localhost:6379`. Don't worry, it won't erase your data.
 
